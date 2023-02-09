@@ -52,7 +52,6 @@ app.get('/reservations/get/:id', async (req, res) => {
 });
 
 app.get('/reservations/get/sort/:value', async (req, res) => {
-  console.log('hjuujihhujhuuhhuj', req.params.value)
   let reservations;
   switch(req.params.value) {
     case 'client-asc':
@@ -74,7 +73,6 @@ app.get('/reservations/get/sort/:value', async (req, res) => {
 
 
 app.post('/reservations/create', async (req, res) => {
-  console.log('hahahah')
   const reservation = new Reservation ({
     client_id: req.body.client_id,
     people: req.body.people,
@@ -83,7 +81,6 @@ app.post('/reservations/create', async (req, res) => {
     dateEnd: req.body.dateEnd,
    
   });
-  console.log(reservation);
   await reservation.save();
   res.send(reservation);
 });
@@ -97,18 +94,18 @@ app.delete('/reservations/delete/:id', async (req, res) => {
 })
 
 app.put('/reservations/update/:id', async (req, res) => {
-  console.log('updatin ', req.body.room);
-
   await Reservation.updateOne({_id: req.params.id}, {
-    room: req.body.room
+    client_id: 2,
+    people: req.body.people,
+    room: req.body.room,
+    dateStart: req.body.dateStart,
+    dateEnd: req.body.dateEnd,
   })
   res.status(200);
 })
 
 
 app.post('/register', async (req, res) => {
-  console.log('posssssssss')
-
   const user = new User ({
     clientId: req.body.clientId,
     login: req.body.login,
@@ -117,9 +114,22 @@ app.post('/register', async (req, res) => {
     lastName: req.body.lastName,
    
   });
-  console.log(user);
   await user.save();
   res.send(user);
+})
+
+
+app.post('/login', async (req, res) => {
+  console.log(req.body)
+    User.findOne({
+    login: req.body.login,
+    password: req.body.password
+  }).exec((err, user) => {
+      if (user) {
+        res.send(user);
+      }
+  })
+
 })
 
 
